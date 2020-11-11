@@ -6,6 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,11 +18,13 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.iiht.evaluation.eloan.dao.ConnectionDao;
 import com.iiht.evaluation.eloan.dto.LoanDto;
 import com.iiht.evaluation.eloan.model.ApprovedLoan;
 import com.iiht.evaluation.eloan.model.LoanInfo;
+import com.iiht.evaluation.eloan.model.User;
 
 
 @WebServlet({"/listall","/process","/callemi","/updatestatus","/logout"})
@@ -87,24 +91,73 @@ public class AdminController extends HttpServlet {
 	private String calemi(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 		// TODO Auto-generated method stub
 	/* write the code to calculate emi for given applno and display the details */
+		LoanInfo loaninformation = new LoanInfo();
 		
-		return null;
+		User user= new User();
+		String applicationNumber = request.getParameter("applno");
+		String amountRequested = request.getParameter("amtrequest");
+		String dateofAssigned = request.getParameter("doa");
+		String bankstructure = request.getParameter("bstructure");
+		String bankIndicator = request.getParameter("bindicator");
+		String address = request.getParameter("address");
+			loaninformation.setAmtrequest(Integer.parseInt(request.getParameter("applno")));
+				loaninformation.setRate(Double.parseDouble(request.getParameter("amtrequest")));
+				loan.setDisbursementDate(LocalDate.parse(request.getParameter("doa")));
+				loan.setDueDate(LocalDate.parse(request.getParameter("bstructure")));
+				loan.setDueDate(LocalDate.parse(request.getParameter("bindicator")));
+				loan.setDueDate(LocalDate.parse(request.getParameter("address")));
+					if(amountRequested.isEmpty() || dateofAssigned.isEmpty() || bankstructure.isEmpty()) {
+						double time = Period.between(loaninformation.getDoa(),loaninformation.getBstructure())
+								.toTotalMonths()/12.0;
+						double interest = time*loaninformation.getLoanAmount()*loaninformation.getRate();
+						double pamt = loaninformation.getAmtRequested()+interest;
+						
+						loaninformation.setTimeInYears(time);
+						loaninformation.setInterest(interest);
+						loaninformation.setPayableAmount(pamt);
+					}
+					return loan;
+				
+				loaninformation = loancomputation.computeInterest(loan);
+				
+				
+				request.setAttribute("loan", loan);
+				
+				String view = "simple_interest_display_page.jsp";
+				request.getRequestDispatcher(view).forward(request, response);
+				
+		return "calemi.jsp";
 	}
-	private String process(HttpServletRequest request, HttpServletResponse response) throws SQLException {
+	private String process(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException {
 		// TODO Auto-generated method stub
 	/* return to process page */
+		String applicationNumber = request.getParameter("applno");
+		LoanInfo loaninformation = new LoanInfo();
+		loaninformation.setAmtrequest(Integer.parseInt(request.getParameter("applno")));
+		request.setAttribute("loanprocess",loaninformation);
+		RequestDispatcher rd=request.getRequestDispatcher("process.jsp");
+		rd.forward(request, response); 
+		
 		return  null;
 	}
 	private String adminLogout(HttpServletRequest request, HttpServletResponse response) {
 		// TODO Auto-generated method stub
 	/* write code to return index page */
+		HttpSession session = request.getSession();
+		String incomingReqPath = request.getServletPath();
+		String view = "";
+		
+		session.removeAttribute("user");
+		session.invalidate();
+		view = "index.jsp";
 		return null;
 	}
 
 	private String listall(HttpServletRequest request, HttpServletResponse response) throws SQLException {
 	/* write the code to display all the loans */
+		request.setAttribute("loanList", Loaninfo.listAll());
+		return "/listall.jsp";
 		
-		return null;
 	}
 
 	

@@ -14,5 +14,7 @@
 <a href="trackloan.jsp">Track Loan Applicatiion</a><br>
 <a href="editloan.jsp">Edit Loan Application</a>
 <jsp:include page="footer.jsp"/>
+User userlogin1=(User)request.getAttribute("userlogin");  
+out.print("Welcome, "+userlogin1.getUsername());
 </body>
 </html>

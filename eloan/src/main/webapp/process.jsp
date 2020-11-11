@@ -11,6 +11,9 @@
 	     callemi method to calculate the emi and other details also provide links
 	     to logout and admin home page
 	-->
-
+<form>
+  <label for="fname">Application#:</label><br>
+  <input type="text" id="fname" name="fname"><br>
+</form>
 </body>
 </html>

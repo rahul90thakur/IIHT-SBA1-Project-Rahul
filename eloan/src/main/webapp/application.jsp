@@ -19,7 +19,6 @@
 				<label>Loan information Code</label>
 				<input type="number" name="applno" required 
 				value="${LoanInfo.applno}" ${isNew?'':'readonly' }/>
-			</div>
 			<div>
 				<label>purpose</label>
 				<input type="text" name="purpose" required value="${LoanInfo.purpose}"/>

@@ -187,14 +187,50 @@ String address = request.getParameter("address");
 		// TODO Auto-generated method stub
 		/* write the code to edit the loan info */
 		int bcode = Integer.parseInt(request.getParameter("applno"));
-		LoanInfo loaninformation = loaninformation.getApplno();
+		LoanInfo loaninformation = new LoanInfo();
+				String applcationnumber=loaninformation.getApplno();
 		request.setAttribute("isNew",false);
-		request.setAttribute("LoanInfo",loaninfo);
+		request.setAttribute("LoanInfo",loaninformation);
 		return "/application.jsp";
 	}
 	private String registerUser(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException {
 		// TODO Auto-generated method stub
 		/* write the code to redirect page to read the user details */
+		
+		String userName1 = request.getParameter("unm");
+		String password1 = request.getParameter("pwd");
+
+		if (userName1 == null) {
+			view = "notfound.jsp";
+		} else if (password1 == null) {
+			request.setAttribute("err", "Password is not received!");
+			view = "userhome.jsp";
+		} else {
+			try {
+				User user = userService.authenticate(userName1, password1);
+				session.setAttribute("user", user);
+				view = "index.jsp";
+			} catch (AddressBookException e) {
+				request.setAttribute("err", e.getMessage());
+				view = "userhome1.jsp";
+			}
+		}
+	}
+	
+		
+		
+		
+		
+		
+		
+		
+	}
+	private String registernewuser(HttpServletRequest request, HttpServletResponse response) throws SQLException {
+		// TODO Auto-generated method stub
+		/* write the code to create the new user account read from user 
+		   and return to index page */
+		
+		
 		User user= new User();
 		String first_name = request.getParameter("first_name");
 		String last_name = request.getParameter("last_name");
@@ -219,40 +255,19 @@ String address = request.getParameter("address");
 		req.forward(request, response);
 		return "newuserui.jsp";
 	}
-	private String registernewuser(HttpServletRequest request, HttpServletResponse response) throws SQLException {
-		// TODO Auto-generated method stub
-		/* write the code to create the new user account read from user 
-		   and return to index page */
-		
-		
-		User user= new User();
-		String first_name = request.getParameter("first_name");
-		String last_name = request.getParameter("last_name");
-		String username = request.getParameter("username");
-		String password = request.getParameter("password");
-		String address = request.getParameter("address");
-		String contact = request.getParameter("contact");
-		
-		
-		user.setBookCode(Integer.parseInt(request.getParameter("bookCode")));
-		book.setTitle(request.getParameter("title"));
-		book.setCategory(request.getParameter("category"));
-		book.setPrice(Double.parseDouble(request.getParameter("price")));
-		book.setPublishDate(LocalDate.parse(request.getParameter("publishDate")));
-		
-		return null;
-	}
 	
-	private String register(HttpServletRequest request, HttpServletResponse response) {
+	private String register(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		/* write the code to redirect to register page */
 		User user= new User();
-		String applicationNumber = request.getParameter("first_name");
-		String amountRequested = request.getParameter("last_name");
-		String dateofAssigned = request.getParameter("username");
-		String bankstructure = request.getParameter("password");
-		String bankIndicator = request.getParameter("address");
-		String address = request.getParameter("contact");
+		String loginID = request.getParameter("username");
+		String password = request.getParameter("password");
+		
+		user.setUsername(loginID);
+		user.setPassword(password);
+		request.setAttribute("userlogin",user);
+		RequestDispatcher rd=request.getRequestDispatcher("newuserui.jsp"); 
+		rd.forward(request, response); 
 		return null;
 	}
 	private String displaystatus(HttpServletRequest request, HttpServletResponse response) throws SQLException {
@@ -267,14 +282,28 @@ String address = request.getParameter("address");
 	private String editloan(HttpServletRequest request, HttpServletResponse response) {
 		// TODO Auto-generated method stub
 	/* write a code to return to editloan page */
-		return null;
+		int bcode = Integer.parseInt(request.getParameter("applno"));
+		LoanInfo loaninformation = new LoanInfo();
+				String applcationnumber=loaninformation.getApplno();
+		request.setAttribute("isNew",false);
+		request.setAttribute("LoanInfo",loaninformation);
+		return "editloan.jsp";
+		
 	}
 
-	private String trackloan(HttpServletRequest request, HttpServletResponse response) {
+	private String trackloan(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 	/* write a code to return to trackloan page */
+		LoanInfo loaninformation= new LoanInfo();
+		String applno = request.getParameter("applno");
+		String email = request.getParameter("email");
 		
-		return null;
+		loaninformation.setApplno(applno);
+		loaninformation.setEmail(email);
+		request.setAttribute("trackloan",loaninformation);
+		RequestDispatcher rd=request.getRequestDispatcher("newuserui.jsp"); 
+		rd.forward(request, response); 
+		return "trackloan.jsp";
 	}
 
 	private String application(HttpServletRequest request, HttpServletResponse response) {

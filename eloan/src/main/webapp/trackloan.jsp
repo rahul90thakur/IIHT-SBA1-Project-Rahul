@@ -10,6 +10,12 @@
 	<!-- write html code to read the application number and send to usercontrollers'
              displaystatus method for displaying the information
 	-->
+	<form>
+  <label for="fname">Application#:</label><br>
+  <input type="text" id="fname" name="fname"><br>
+  <label for="lname">email:</label><br>
+  <input type="text" id="lname" name="lname">
+</form>
 
 </body>
 </html>
